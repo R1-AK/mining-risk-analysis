@@ -1,5 +1,6 @@
 import os
 from flask import Flask, render_template, request, jsonify
+from flask_ngrok import run_with_ngrok  # <-- ADD THIS LINE
 from werkzeug.utils import secure_filename
 import geopandas as gpd
 from pathlib import Path
@@ -24,6 +25,8 @@ except ImportError as e:
     run_flowpath_analysis = None
 
 app = Flask(__name__)
+run_with_ngrok(app)  # <-- AND ADD THIS LINE
+
 # Create a dedicated, temporary folder for uploads
 app.config['UPLOAD_FOLDER'] = Path(__file__).parent / 'uploads'
 app.config['UPLOAD_FOLDER'].mkdir(exist_ok=True)
@@ -188,4 +191,3 @@ def handle_flowpath_analysis():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
