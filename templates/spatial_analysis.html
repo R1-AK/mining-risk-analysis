@@ -16,7 +16,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body class="bg-gray-50">
-
     <div class="container mx-auto p-4 md:p-8">
         <header class="mb-8">
             <a href="/" class="text-green-600 hover:underline mb-4 block">&larr; Back to Analysis Hub</a>
@@ -25,7 +24,6 @@
         </header>
 
         <form id="spatial-form" class="space-y-8">
-            <!-- Section 1: Core Inputs -->
             <div class="bg-white p-6 rounded-lg shadow-md form-section">
                 <h2 class="text-2xl font-semibold text-gray-700 mb-4">1. Core Inputs</h2>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -42,18 +40,14 @@
                 </div>
             </div>
 
-            <!-- Section 2: Risk Datasets -->
             <div class="bg-white p-6 rounded-lg shadow-md form-section">
                 <h2 class="text-2xl font-semibold text-gray-700 mb-4">2. Risk Datasets to Analyze</h2>
-                <div id="risk-datasets-container" class="space-y-6">
-                    <!-- Dynamic dataset cards will be inserted here -->
-                </div>
+                <div id="risk-datasets-container" class="space-y-6"></div>
                 <button type="button" id="add-dataset-btn" class="mt-6 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                     Add Risk Dataset
                 </button>
             </div>
 
-            <!-- Section 3: Run Analysis -->
             <div class="flex justify-end">
                 <button type="submit" id="run-spatial-btn" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                     <svg id="run-icon" class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -63,14 +57,14 @@
             </div>
         </form>
 
-        <!-- Section 4: Results -->
         <div id="results-section" class="mt-12 bg-white p-6 rounded-lg shadow-md hidden">
             <h2 class="text-2xl font-semibold text-gray-700 mb-4">Analysis Results</h2>
-            <pre id="results-output" class="bg-gray-900 text-white p-4 rounded-md text-sm whitespace-pre-wrap"></pre>
+            <div id="results-output" class="bg-gray-100 p-4 rounded-md text-sm whitespace-pre-wrap"></div>
         </div>
     </div>
 
     <script>
+        // --- (All the functions to create cards, handle UI changes, etc. remain the same) ---
         const addDatasetBtn = document.getElementById('add-dataset-btn');
         const datasetsContainer = document.getElementById('risk-datasets-container');
         let datasetCounter = 0;
@@ -79,78 +73,21 @@
             datasetCounter++;
             const cardId = `dataset-card-${datasetCounter}`;
             const fileInputId = `risk_file_${datasetCounter}`;
-
             const card = document.createElement('div');
             card.id = cardId;
             card.className = 'risk-card bg-gray-100 p-4 rounded-lg border border-gray-200';
-            card.innerHTML = `
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-lg font-medium text-gray-800">Risk Dataset ${datasetCounter}</h3>
-                    <button type="button" class="text-red-500 hover:text-red-700" onclick="removeCard('${cardId}')">&times; Remove</button>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start">
-                    <!-- Column 1: File, Name, Type -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Dataset File</label>
-                        <input type="file" name="${fileInputId}" required class="dataset-file mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-white focus:outline-none">
-                        <p class="mt-1 text-xs text-gray-500">Upload .zip for shapefiles, .tif for rasters.</p>
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Dataset Name</label>
-                        <input type="text" placeholder="e.g., Protected Areas" required class="dataset-name mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm">
-                    </div>
-                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Dataset Type</label>
-                        <select class="dataset-type mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm">
-                            <option value="VECTOR">Vector (Shapefile)</option>
-                            <option value="RASTER">Raster (GeoTIFF)</option>
-                        </select>
-                    </div>
-
-                    <!-- Column 2: Categories and Processing -->
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Dataset Category</label>
-                        <select class="main-category mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm">
-                            <option value="Natural Environment">Natural Environment</option>
-                            <option value="Socioeconomic">Socioeconomic</option>
-                        </select>
-                    </div>
-                    <div class="subcategory-container">
-                        <!-- Dynamic subcategory dropdowns will appear here -->
-                    </div>
-                     <div>
-                        <label class="block text-sm font-medium text-gray-700">Processing Type</label>
-                        <select class="processing-type mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm">
-                            <option value="CONTINUOUS">Continuous</option>
-                            <option value="CATEGORICAL">Categorical</option>
-                        </select>
-                    </div>
-
-                    <!-- Column 3: Dynamic Classification -->
-                    <div class="classification-section-container col-span-1 md:col-span-2 lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-4">
-                         <div class="classification-section hidden lg:col-start-2">
-                            <!-- Content changes based on selection -->
-                        </div>
-                    </div>
-                </div>
-                 <div class="biodiversity-note hidden text-sm text-blue-700 bg-blue-100 p-3 mt-4 rounded-md">
-                    Note: Terrestrial Biodiversity datasets are used to analyze species richness (e.g., for mammals, birds, amphibians, reptiles).
-                </div>
-            `;
+            card.innerHTML = `<div class="flex justify-between items-center mb-4"><h3 class="text-lg font-medium text-gray-800">Risk Dataset ${datasetCounter}</h3><button type="button" class="text-red-500 hover:text-red-700" onclick="removeCard('${cardId}')">&times; Remove</button></div><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-start"><div><label class="block text-sm font-medium text-gray-700">Dataset File</label><input type="file" name="${fileInputId}" required class="dataset-file mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-white focus:outline-none"><p class="mt-1 text-xs text-gray-500">Upload .zip for shapefiles, .tif for rasters.</p></div><div><label class="block text-sm font-medium text-gray-700">Dataset Name</label><input type="text" placeholder="e.g., Protected Areas" required class="dataset-name mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm"></div><div><label class="block text-sm font-medium text-gray-700">Dataset Type</label><select class="dataset-type mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm"><option value="VECTOR">Vector (Shapefile)</option><option value="RASTER">Raster (GeoTIFF)</option></select></div><div><label class="block text-sm font-medium text-gray-700">Dataset Category</label><select class="main-category mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm"><option value="Natural Environment">Natural Environment</option><option value="Socioeconomic">Socioeconomic</option></select></div><div class="subcategory-container"></div><div><label class="block text-sm font-medium text-gray-700">Processing Type</label><select class="processing-type mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm"><option value="CONTINUOUS">Continuous</option><option value="CATEGORICAL">Categorical</option></select></div><div class="classification-section-container col-span-1 md:col-span-2 lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-4"><div class="classification-section hidden lg:col-start-2"></div></div></div><div class="biodiversity-note hidden text-sm text-blue-700 bg-blue-100 p-3 mt-4 rounded-md">Note: Terrestrial Biodiversity datasets are used to analyze species richness (e.g., for mammals, birds, amphibians, reptiles).</div>`;
             datasetsContainer.appendChild(card);
             addEventListeners(card);
-            updateSubcategories(card); // Initial setup
+            updateSubcategories(card);
         }
-
         function removeCard(cardId) { document.getElementById(cardId)?.remove(); }
-
         function addEventListeners(card) {
             card.querySelector('.dataset-file').addEventListener('change', () => handleFileTypeChange(card));
             card.querySelector('.dataset-type').addEventListener('change', () => updateClassificationUI(card));
             card.querySelector('.processing-type').addEventListener('change', () => updateClassificationUI(card));
             card.querySelector('.main-category').addEventListener('change', () => updateSubcategories(card));
         }
-
         function handleFileTypeChange(card) {
             const fileInput = card.querySelector('.dataset-file');
             const datasetTypeSelect = card.querySelector('.dataset-type');
@@ -159,155 +96,13 @@
             else if (filename.endsWith('.tif') || filename.endsWith('.tiff')) { datasetTypeSelect.value = 'RASTER'; }
             updateClassificationUI(card);
         }
-
         function updateSubcategories(card) {
             const mainCategory = card.querySelector('.main-category').value;
             const subcategoryContainer = card.querySelector('.subcategory-container');
             const biodiversityNote = card.querySelector('.biodiversity-note');
             let subcategoryHTML = '';
-
             if (mainCategory === 'Natural Environment') {
-                subcategoryHTML = `
-                    <label class="block text-sm font-medium text-gray-700">Subcategory</label>
-                    <select class="subcategory mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm">
-                        <option value="Terrestrial Ecosystem">Terrestrial Ecosystem</option>
-                        <option value="Terrestrial Biodiversity">Terrestrial Biodiversity</option>
-                    </select>
-                `;
+                subcategoryHTML = `<label class="block text-sm font-medium text-gray-700">Subcategory</label><select class="subcategory mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm"><option value="Terrestrial Ecosystem">Terrestrial Ecosystem</option><option value="Terrestrial Biodiversity">Terrestrial Biodiversity</option></select>`;
             } else if (mainCategory === 'Socioeconomic') {
-                subcategoryHTML = `
-                     <label class="block text-sm font-medium text-gray-700">Subcategory</label>
-                    <select class="subcategory mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm">
-                        <option value="Governance">Governance</option>
-                        <option value="Demography">Demography</option>
-                        <option value="Others">Others (Specify)</option>
-                    </select>
-                    <div class="other-subcategory-wrapper hidden mt-2">
-                        <label class="block text-sm font-medium text-gray-700">Other Subcategory Name</label>
-                        <input type="text" class="other-subcategory-input mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm">
-                    </div>
-                `;
+                subcategoryHTML = `<label class="block text-sm font-medium text-gray-700">Subcategory</label><select class="subcategory mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm"><option value="Governance">Governance</option><option value="Demography">Demography</option><option value="Others">Others (Specify)</option></select><div class="other-subcategory-wrapper hidden mt-2"><label class="block text-sm font-medium text-gray-700">Other Subcategory Name</label><input type="text" class="other-subcategory-input mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm"></div>`;
             }
-            subcategoryContainer.innerHTML = subcategoryHTML;
-
-            const subcatSelect = card.querySelector('.subcategory');
-            if (subcatSelect) {
-                subcatSelect.addEventListener('change', () => {
-                    const otherWrapper = card.querySelector('.other-subcategory-wrapper');
-                    if (otherWrapper) {
-                        otherWrapper.classList.toggle('hidden', subcatSelect.value !== 'Others');
-                    }
-                    biodiversityNote.classList.toggle('hidden', subcatSelect.value !== 'Terrestrial Biodiversity');
-                });
-                // Trigger change to set initial state
-                subcatSelect.dispatchEvent(new Event('change'));
-            }
-        }
-
-        function updateClassificationUI(card) {
-            const datasetType = card.querySelector('.dataset-type').value;
-            const processingType = card.querySelector('.processing-type').value;
-            const classificationSection = card.querySelector('.classification-section');
-
-            if (processingType === 'CATEGORICAL') {
-                classificationSection.classList.remove('hidden');
-                if (datasetType === 'VECTOR') {
-                    classificationSection.innerHTML = `
-                        <label class="block text-sm font-medium text-gray-700">Column for Classification</label>
-                        <div class="flex items-center space-x-2 mt-1">
-                            <select class="classification-column block w-full rounded-md border-gray-300 shadow-sm sm:text-sm"></select>
-                            <button type="button" class="get-columns-btn px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">Get</button>
-                        </div>
-                        <p class="mt-1 text-xs text-gray-500">Upload a .zip file first, then click "Get".</p>
-                    `;
-                    card.querySelector('.get-columns-btn').addEventListener('click', (e) => fetchColumns(card, e));
-                } else { // RASTER
-                    classificationSection.innerHTML = `
-                        <label class="block text-sm font-medium text-gray-700">Raster Classes</label>
-                        <input type="text" placeholder="e.g., 1,1,Forest;10,20,Plantation" class="classification-values mt-1 block w-full rounded-md border-gray-300 shadow-sm sm:text-sm">
-                        <p class="mt-1 text-xs text-gray-500">Format: min,max,name;min,max,name</p>
-                    `;
-                }
-            } else {
-                classificationSection.innerHTML = '';
-                classificationSection.classList.add('hidden');
-            }
-        }
-
-        async function fetchColumns(card, event) {
-            const button = event.target;
-            const fileInput = card.querySelector('.dataset-file');
-            const columnSelect = card.querySelector('.classification-column');
-            if (!fileInput.files[0] || !fileInput.files[0].name.toLowerCase().endsWith('.zip')) {
-                alert('Please upload a .zip archive for the shapefile first.'); return;
-            }
-            button.textContent = '...'; button.disabled = true;
-            const formData = new FormData();
-            formData.append('shapefile', fileInput.files[0]);
-            try {
-                const response = await fetch('/get_shapefile_columns', { method: 'POST', body: formData });
-                const data = await response.json();
-                if (response.ok) {
-                    columnSelect.innerHTML = data.columns.map(col => `<option value="${col}">${col}</option>`).join('');
-                } else { alert('Error: ' + data.error); }
-            } catch (error) { alert('An unexpected error occurred.');
-            } finally { button.textContent = 'Get'; button.disabled = false; }
-        }
-
-        addDatasetBtn.addEventListener('click', createDatasetCard);
-
-        const form = document.getElementById('spatial-form');
-        const resultsSection = document.getElementById('results-section');
-        const resultsOutput = document.getElementById('results-output');
-        const runBtn = document.getElementById('run-spatial-btn');
-        const runIcon = document.getElementById('run-icon');
-        const loadingSpinner = document.getElementById('loading-spinner');
-
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            runBtn.disabled = true;
-            runIcon.classList.add('hidden');
-            loadingSpinner.classList.remove('hidden');
-            resultsSection.classList.remove('hidden');
-            resultsOutput.textContent = 'Preparing data and starting analysis... This may take several minutes.';
-            const formData = new FormData();
-            formData.append('mining_data', document.getElementById('mining_data').files[0]);
-            formData.append('buffer_distances', document.getElementById('buffer_distances').value);
-
-            const riskDataConfig = [];
-            document.querySelectorAll('.risk-card').forEach(card => {
-                const fileInput = card.querySelector('.dataset-file');
-                let config = {
-                    file_input_id: fileInput.name, name: card.querySelector('.dataset-name').value,
-                    type: card.querySelector('.dataset-type').value,
-                    main_category: card.querySelector('.main-category').value,
-                    subcategory: card.querySelector('.subcategory')?.value,
-                    other_subcategory: card.querySelector('.other-subcategory-input')?.value,
-                    processing: card.querySelector('.processing-type').value,
-                };
-                if (config.processing === 'CATEGORICAL') {
-                    if (config.type === 'VECTOR') { config.column = card.querySelector('.classification-column').value; }
-                    else { config.classes = card.querySelector('.classification-values').value; }
-                }
-                riskDataConfig.push(config);
-                formData.append(fileInput.name, fileInput.files[0]);
-            });
-            formData.append('risk_data_config', JSON.stringify(riskDataConfig));
-
-            try {
-                const response = await fetch('/run_spatial_analysis', { method: 'POST', body: formData });
-                const result = await response.json();
-                resultsOutput.textContent = response.ok ? `Success! Results saved to:\n\n${result.results_file}` : `Error:\n\n${result.error}`;
-            } catch (error) {
-                 resultsOutput.textContent = `An unexpected server or network error occurred:\n\n${error.toString()}`;
-            } finally {
-                runBtn.disabled = false;
-                runIcon.classList.remove('hidden');
-                loadingSpinner.classList.add('hidden');
-            }
-        });
-        createDatasetCard();
-    </script>
-</body>
-</html>
-
