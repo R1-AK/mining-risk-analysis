@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flowpath Analysis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .form-section { border-left: 3px solid #16A34A; }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-50">
+
+    <div class="container mx-auto p-4 md:p-8">
+        <header class="mb-8">
+            <a href="/" class="text-green-600 hover:underline mb-4 block">&larr; Back to Analysis Hub</a>
+            <h1 class="text-4xl font-bold text-gray-800">Flowpath Analysis</h1>
+            <p class="text-lg text-gray-600 mt-2">Model potential downstream impacts from mining sites using a Digital Elevation Model (DEM) and Google Earth Engine.</p>
+        </header>
+
+        <form id="flowpath-form" class="space-y-8">
+
+            <!-- Section 1: Google Earth Engine Authentication -->
+            <div class="bg-white p-6 rounded-lg shadow-md form-section">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-4">1. GEE Authentication</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="gee_service_account" class="block text-sm font-medium text-gray-700">Service Account Email</label>
+                        <input type="email" name="gee_service_account" id="gee_service_account" placeholder="your-account@your-project.iam.gserviceaccount.com" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm">
+                    </div>
+                     <div>
+                        <label for="gee_project_id" class="block text-sm font-medium text-gray-700">Project ID</label>
+                        <input type="text" name="gee_project_id" id="gee_project_id" placeholder="your-project-id" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label for="gee_key_file" class="block text-sm font-medium text-gray-700">Service Account Key File (.json)</label>
+                        <input type="file" name="gee_key_file" id="gee_key_file" required accept=".json" class="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 2: Core Input -->
+            <div class="bg-white p-6 rounded-lg shadow-md form-section">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-4">2. Core Input</h2>
+                <div>
+                    <label for="mining_data" class="block text-sm font-medium text-gray-700">Mining Lease Data (Shapefile)</label>
+                    <input type="file" name="mining_data" id="mining_data" required accept=".shp,.zip" class="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none">
+                     <p class="mt-1 text-xs text-gray-500">Upload a .zip file containing the mining site polygons.</p>
+                </div>
+            </div>
+
+            <!-- Section 3: DEM Analysis Parameters -->
+            <div class="bg-white p-6 rounded-lg shadow-md form-section">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-4">3. DEM Analysis Parameters</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="scale" class="block text-sm font-medium text-gray-700">Analysis Resolution (meters)</label>
+                        <input type="number" name="scale" id="scale" value="90" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm">
+                        <p class="mt-1 text-xs text-gray-500">Pixel size for DEM analysis (e.g., 30 or 90). Higher values are faster.</p>
+                    </div>
+                    <div>
+                        <label for="radius_m" class="block text-sm font-medium text-gray-700">Analysis Radius (meters)</label>
+                        <input type="number" name="radius_m" id="radius_m" value="20000" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm">
+                        <p class="mt-1 text-xs text-gray-500">Size of the DEM area to download around each mine site.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 4: Risk Analysis Parameters -->
+            <div class="bg-white p-6 rounded-lg shadow-md form-section">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-4">4. Risk Analysis Parameters</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label for="trace_distance" class="block text-sm font-medium text-gray-700">Downstream Trace Distance (km)</label>
+                        <input type="number" name="trace_distance" id="trace_distance" value="20" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm">
+                        <p class="mt-1 text-xs text-gray-500">How far to trace the impact along the river path.</p>
+                    </div>
+                    <div>
+                        <label for="corridor_width" class="block text-sm font-medium text-gray-700">Impact Corridor Width (meters)</label>
+                        <input type="number" name="corridor_width" id="corridor_width" value="500" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-green-500 focus:ring-green-500 sm:text-sm">
+                        <p class="mt-1 text-xs text-gray-500">Total width of the buffered area around the flowpath.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section 5: Risk Indicators -->
+            <div class="bg-white p-6 rounded-lg shadow-md form-section">
+                <h2 class="text-2xl font-semibold text-gray-700 mb-4">5. Risk Indicators to Analyze</h2>
+                <p class="text-sm text-gray-500 mb-4">Select the indicators to assess. Data will be sourced automatically from Google Earth Engine.</p>
+                <div class="space-y-2">
+                    <label class="flex items-center">
+                        <input type="checkbox" name="indicators" value="population" class="h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-500" checked>
+                        <span class="ml-2 text-gray-700">Population (from WorldPop)</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" name="indicators" value="agriculture" class="h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-500" checked>
+                        <span class="ml-2 text-gray-700">Agriculture (from Copernicus Land Cover)</span>
+                    </label>
+                    <label class="flex items-center">
+                        <input type="checkbox" name="indicators" value="forest" class="h-4 w-4 rounded border-gray-300 text-green-600 focus:ring-green-500" checked>
+                        <span class="ml-2 text-gray-700">Forest Cover (from Copernicus Land Cover)</span>
+                    </label>
+                </div>
+            </div>
+
+             <!-- Section 6: Run Analysis -->
+            <div class="flex justify-end">
+                <button type="submit" id="run-flowpath-btn" class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                     <svg id="run-icon-flow" class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <svg id="loading-spinner-flow" class="animate-spin -ml-1 mr-3 h-5 w-5 text-white hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                    Run Flowpath Analysis
+                </button>
+            </div>
+        </form>
+
+        <!-- Section 7: Results -->
+        <div id="results-section-flow" class="mt-12 bg-white p-6 rounded-lg shadow-md hidden">
+             <h2 class="text-2xl font-semibold text-gray-700 mb-4">Analysis Results</h2>
+             <pre id="results-output-flow" class="bg-gray-900 text-white p-4 rounded-md text-sm whitespace-pre-wrap"></pre>
+        </div>
+    </div>
+
+    <script>
+        const formFlow = document.getElementById('flowpath-form');
+        const resultsSectionFlow = document.getElementById('results-section-flow');
+        const resultsOutputFlow = document.getElementById('results-output-flow');
+        const runBtnFlow = document.getElementById('run-flowpath-btn');
+        const runIconFlow = document.getElementById('run-icon-flow');
+        const loadingSpinnerFlow = document.getElementById('loading-spinner-flow');
+
+        formFlow.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            runBtnFlow.disabled = true;
+            runIconFlow.classList.add('hidden');
+            loadingSpinnerFlow.classList.remove('hidden');
+            resultsSectionFlow.classList.remove('hidden');
+            resultsOutputFlow.textContent = 'Starting analysis... This may take a very long time depending on the number of mining leases.';
+
+            const formData = new FormData(formFlow);
+
+            try {
+                const response = await fetch('/run_flowpath_analysis', {
+                    method: 'POST',
+                    body: formData,
+                });
+                const result = await response.json();
+                resultsOutputFlow.textContent = response.ok ? `Success!\n\n${JSON.stringify(result, null, 2)}` : `Error:\n\n${JSON.stringify(result, null, 2)}`;
+            } catch (error) {
+                resultsOutputFlow.textContent = `A network or server error occurred:\n\n${error.toString()}`;
+            } finally {
+                runBtnFlow.disabled = false;
+                runIconFlow.classList.remove('hidden');
+                loadingSpinnerFlow.classList.add('hidden');
+            }
+        });
+    </script>
+
+</body>
+</html>
+

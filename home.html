@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Risk Impact Analysis of Mining Activities</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .card { transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+
+    <div class="container mx-auto px-4 py-12">
+        <header class="text-center mb-12">
+            <h1 class="text-5xl font-bold text-gray-800">Risk Impact Analysis of Mining Activities</h1>
+            <p class="text-xl text-gray-600 mt-4">Choose your analysis method to assess environmental and socioeconomic risks.</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            <!-- Spatial Analysis Card -->
+            <a href="/spatial_analysis_page" class="card bg-white p-8 rounded-lg shadow-lg border border-transparent hover:border-green-500">
+                <div class="flex items-center mb-4">
+                     <div class="p-3 bg-green-100 rounded-full">
+                        <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M12 6V4m0 16v-2M8 12a4 4 0 118 0 4 4 0 01-8 0z"></path></svg>
+                    </div>
+                    <h2 class="ml-4 text-3xl font-semibold text-gray-800">Spatial Analysis</h2>
+                </div>
+                <p class="text-gray-600">Analyze risks within concentric buffer zones (e.g., 1, 5, 25 km) around mining sites. Ideal for assessing proximity-based impacts on static datasets like Protected Areas, Forest Cover, and Human Footprint.</p>
+            </a>
+
+            <!-- Flowpath Analysis Card -->
+            <a href="/flowpath_analysis_page" class="card bg-white p-8 rounded-lg shadow-lg border border-transparent hover:border-blue-500">
+                 <div class="flex items-center mb-4">
+                    <div class="p-3 bg-blue-100 rounded-full">
+                        <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 8v8m-4-5v5m-4-2v2m-2 4h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                    </div>
+                    <h2 class="ml-4 text-3xl font-semibold text-gray-800">Flowpath Analysis</h2>
+                </div>
+                <p class="text-gray-600">Model how potential contaminants (e.g., tailings) travel downstream from mining sites. Uses a Digital Elevation Model (DEM) to simulate flow over terrain, assessing impacts on Population, Agriculture, and Forests along the path.</p>
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>
+
